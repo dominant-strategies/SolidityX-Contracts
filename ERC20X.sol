@@ -77,19 +77,15 @@ contract ERC20 {
         _deployer = msg.sender;
         _totalSupply = 1000E18; // 1000 tokens
         _mint(_deployer, _totalSupply);
-        Ranges[0] = Range(0, 9);    // prime                        
-        Ranges[1] = Range(10, 19); // region 0
-        Ranges[2] = Range(20, 29); // zone 0-0
-        Ranges[3] = Range(30, 39); // zone 0-1
-        Ranges[4] = Range(40, 49); // zone 0-2
-        Ranges[5] = Range(50, 59); // region 1
-        Ranges[6] = Range(60, 69); // zone 1-0
-        Ranges[7] = Range(70, 79); // zone 1-1
-        Ranges[8] = Range(80, 89); // zone 1-2
-        Ranges[9] = Range(90, 99); // region 2
-        Ranges[10] = Range(100, 109); // zone 2-0
-        Ranges[11] = Range(110, 119); // zone 2-1
-        Ranges[12] = Range(120, 129); // zone 2-2
+        Ranges[0] = Range(0, 29);    // zone 0-0 // cyprus1                        
+        Ranges[1] = Range(30, 58); // zone 0-1 // cyprus2
+        Ranges[2] = Range(59, 87); // zone 0-2 // cyprus3
+        Ranges[3] = Range(88, 115); // zone 1-0 // paxos1
+        Ranges[4] = Range(116, 143); // zone 1-1 // paxos2
+        Ranges[5] = Range(144, 171); // zone 1-2 // paxos3
+        Ranges[6] = Range(172, 199); // zone 2-0 // hydra1
+        Ranges[7] = Range(200, 227); // zone 2-1 // hydra2
+        Ranges[8] = Range(228, 255); // zone 2-2 // hydra3
     }
 
     /**
@@ -180,7 +176,8 @@ contract ERC20 {
         require(!isInternal, "Address is not external");
 
         _burn(msg.sender, amount);
-        address toAddr = ApprovedAddresses[getAddressLocation(to)]; 
+        address toAddr = ApprovedAddresses[getAddressLocation(to)];
+        require(toAddr != address(0), "Token is not available on the destination chain"); 
         uint totalGas = (baseFee + minerTip) * gasLimit;
         require(msg.value  >= totalGas, string(abi.encodePacked("Not enough gas sent, need at least ", uint2str(totalGas), " wei")));
         bytes memory encoded = abi.encodeWithSignature("incomingTransfer(address,uint256)", to, amount);
@@ -491,15 +488,15 @@ contract ERC20 {
         }
         require(!isInternal, "Address is not external");
         require(msg.sender == _deployer, "Sender is not deployer");
-        require(chain < 13, "Max 13 chains");
-        require(ApprovedAddresses[chain] == address(0), "The approved address for this chain already exists");
+        require(chain < 9, "Max 9 zones");
+        require(ApprovedAddresses[chain] == address(0), "The approved address for this zone already exists");
         ApprovedAddresses[chain] = addr;
     }
 
     // This function uses the stored prefix list to determine an address's location based on its first byte.
     function getAddressLocation(address addr) public view returns (uint8) {
         uint8 prefix =  uint8(toBytes(addr)[0]);
-        for(uint8 i = 0; i < 13; i++) {
+        for(uint8 i = 0; i < 9; i++) {
             if (prefix >= Ranges[i].low && prefix <= Ranges[i].high) {
                 return i;
             }
