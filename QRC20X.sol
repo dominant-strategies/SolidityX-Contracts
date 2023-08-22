@@ -23,7 +23,7 @@ pragma solidity ^0.8.0; // Note: You must have a version of SolidityX to compile
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20 {
+contract QRC20 {
     mapping(address => uint256) private _balances;
 
     mapping(address => mapping(address => uint256)) private _allowances;
@@ -142,12 +142,7 @@ contract ERC20 {
      * - `to` cannot be the zero address or an external address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address to, uint256 amount) public payable  returns (bool) {
-        bool isInternal;
-        assembly {
-            isInternal := isaddrinternal(to)    // This opcode returns true if an address is internal
-        }
-        require(isInternal, "Address is external. Use cross-chain transfer function.");
+    function transfer(address to, uint256 amount) public returns (bool) {
         _transfer(msg.sender, to, amount);
         return true;
     }
@@ -249,7 +244,7 @@ contract ERC20 {
         address from,
         address to,
         uint256 amount
-    ) public   returns (bool) {
+    ) public   returns (bool) { // TODO: Allow this to work cross-chain (crossChainTransferFrom)
         _spendAllowance(from, msg.sender, amount);
         _transfer(from, to, amount);
         return true;
@@ -317,6 +312,12 @@ contract ERC20 {
         address to,
         uint256 amount
     ) internal  {
+        bool isInternal;
+        assembly {
+            isInternal := isaddrinternal(to)    // This opcode returns true if an address is internal
+        }
+        require(isInternal, "Address is external. Use cross-chain transfer function.");
+
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
 
@@ -407,6 +408,12 @@ contract ERC20 {
         address spender,
         uint256 amount
     ) internal  {
+        bool isInternal;
+        assembly {
+            isInternal := isaddrinternal(spender)    // This opcode returns true if an address is internal
+        }
+        require(isInternal, "Spender address is external. Use cross-chain transfer function.");
+
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
