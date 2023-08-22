@@ -158,7 +158,7 @@ contract QRC721 is IERC721Errors {
     /**
      * @dev See {IERC721-balanceOf}.
      */
-    function balanceOf(address owner) public view virtual returns (uint256) {
+    function balanceOf(address owner) public view  returns (uint256) {
         if (owner == address(0)) {
             revert ERC721InvalidOwner(address(0));
         }
@@ -168,7 +168,7 @@ contract QRC721 is IERC721Errors {
     /**
      * @dev See {IERC721-ownerOf}.
      */
-    function ownerOf(uint256 tokenId) public view virtual returns (address) {
+    function ownerOf(uint256 tokenId) public view  returns (address) {
         address owner = _ownerOf(tokenId);
         if (owner == address(0)) {
             revert ERC721NonexistentToken(tokenId);
@@ -179,21 +179,21 @@ contract QRC721 is IERC721Errors {
     /**
      * @dev See {IERC721Metadata-name}.
      */
-    function name() public view virtual returns (string memory) {
+    function name() public view  returns (string memory) {
         return _name;
     }
 
     /**
      * @dev See {IERC721Metadata-symbol}.
      */
-    function symbol() public view virtual returns (string memory) {
+    function symbol() public view  returns (string memory) {
         return _symbol;
     }
 
      /**
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
      */
-    function tokenURI(uint256 tokenId) public view virtual returns (string memory) {
+    function tokenURI(uint256 tokenId) public view  returns (string memory) {
         _requireMinted(tokenId);
 
         string memory baseURI = _baseURI();
@@ -205,21 +205,21 @@ contract QRC721 is IERC721Errors {
      * token will be the concatenation of the `baseURI` and the `tokenId`. Empty
      * by default, can be overridden in child contracts.
      */
-    function _baseURI() internal view virtual returns (string memory) {
+    function _baseURI() internal view  returns (string memory) {
         return "https://qu.ai/nft/";
     }
 
     /**
      * @dev See {IERC721-approve}.
      */
-    function approve(address to, uint256 tokenId) public virtual {
+    function approve(address to, uint256 tokenId) public  {
         _approve(to, tokenId, msg.sender);
     }
 
     /**
      * @dev See {IERC721-getApproved}.
      */
-    function getApproved(uint256 tokenId) public view virtual returns (address) {
+    function getApproved(uint256 tokenId) public view  returns (address) {
         _requireMinted(tokenId);
 
         return _getApproved(tokenId);
@@ -228,21 +228,21 @@ contract QRC721 is IERC721Errors {
     /**
      * @dev See {IERC721-setApprovalForAll}.
      */
-    function setApprovalForAll(address operator, bool approved) public virtual {
+    function setApprovalForAll(address operator, bool approved) public  {
         _setApprovalForAll(msg.sender, operator, approved);
     }
 
     /**
      * @dev See {IERC721-isApprovedForAll}.
      */
-    function isApprovedForAll(address owner, address operator) public view virtual returns (bool) {
+    function isApprovedForAll(address owner, address operator) public view  returns (bool) {
         return _operatorApprovals[owner][operator];
     }
 
     /**
      * @dev See {IERC721-transferFrom}.
      */
-    function transferFrom(address from, address to, uint256 tokenId) public virtual {
+    function transferFrom(address from, address to, uint256 tokenId) public  {
         if (to == address(0)) {
             revert ERC721InvalidReceiver(address(0));
         }
@@ -264,7 +264,7 @@ contract QRC721 is IERC721Errors {
     /**
      * @dev See {IERC721-safeTransferFrom}.
      */
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual {
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public  {
         transferFrom(from, to, tokenId);
         _checkOnERC721Received(from, to, tokenId, data);
     }
@@ -277,14 +277,14 @@ contract QRC721 is IERC721Errors {
      * consistent with ownership. The invariant to preserve is that for any address `a` the value returned by
      * `balanceOf(a)` must be equal to the number of tokens such that `_ownerOf(tokenId)` is `a`.
      */
-    function _ownerOf(uint256 tokenId) internal view virtual returns (address) {
+    function _ownerOf(uint256 tokenId) internal view  returns (address) {
         return _owners[tokenId];
     }
 
     /**
      * @dev Returns the approved address for `tokenId`. Returns 0 if `tokenId` is not minted.
      */
-    function _getApproved(uint256 tokenId) internal view virtual returns (address) {
+    function _getApproved(uint256 tokenId) internal view  returns (address) {
         return _tokenApprovals[tokenId];
     }
 
@@ -295,7 +295,7 @@ contract QRC721 is IERC721Errors {
      * WARNING: This function assumes that `owner` is the actual owner of `tokenId` and does not
      * verify this assumption.
      */
-    function _isAuthorized(address owner, address spender, uint256 tokenId) internal view virtual returns (bool) {
+    function _isAuthorized(address owner, address spender, uint256 tokenId) internal view  returns (bool) {
         return
             spender != address(0) &&
             (owner == spender || isApprovedForAll(owner, spender) || _getApproved(tokenId) == spender);
@@ -308,7 +308,7 @@ contract QRC721 is IERC721Errors {
      * WARNING: This function relies on {_isAuthorized}, so it doesn't check whether `owner` is the
      * actual owner of `tokenId`.
      */
-    function _checkAuthorized(address owner, address spender, uint256 tokenId) internal view virtual {
+    function _checkAuthorized(address owner, address spender, uint256 tokenId) internal view  {
         if (!_isAuthorized(owner, spender, tokenId)) {
             if (owner == address(0)) {
                 revert ERC721NonexistentToken(tokenId);
@@ -328,7 +328,7 @@ contract QRC721 is IERC721Errors {
      * {_ownerOf} function to resolve the ownership of the corresponding tokens so that balances and ownership
      * remain consistent with one another.
      */
-    function _increaseBalance(address account, uint128 value) internal virtual {
+    function _increaseBalance(address account, uint128 value) internal  {
         unchecked {
             _balances[account] += value;
         }
@@ -345,7 +345,7 @@ contract QRC721 is IERC721Errors {
      *
      * NOTE: If overriding this function in a way that tracks balances, see also {_increaseBalance}.
      */
-    function _update(address to, uint256 tokenId, address auth) internal virtual returns (address) {
+    function _update(address to, uint256 tokenId, address auth) internal  returns (address) {
         address from = _ownerOf(tokenId);
 
         // Perform (optional) operator check
@@ -473,7 +473,7 @@ contract QRC721 is IERC721Errors {
      * @dev Same as {xref-ERC721-_safeMint-address-uint256-}[`_safeMint`], with an additional `data` parameter which is
      * forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
      */
-    function _safeMint(address to, uint256 tokenId, bytes memory data) internal virtual {
+    function _safeMint(address to, uint256 tokenId, bytes memory data) internal  {
         _mint(to, tokenId);
         _checkOnERC721Received(address(0), to, tokenId, data);
     }
@@ -546,7 +546,7 @@ contract QRC721 is IERC721Errors {
      * @dev Same as {xref-ERC721-_safeTransfer-address-address-uint256-}[`_safeTransfer`], with an additional `data` parameter which is
      * forwarded in {IERC721Receiver-onERC721Received} to contract recipients.
      */
-    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal virtual {
+    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory data) internal  {
         _transfer(from, to, tokenId);
         _checkOnERC721Received(from, to, tokenId, data);
     }
@@ -559,7 +559,7 @@ contract QRC721 is IERC721Errors {
      *
      * Emits an {Approval} event.
      */
-    function _approve(address to, uint256 tokenId, address auth) internal virtual returns (address) {
+    function _approve(address to, uint256 tokenId, address auth) internal  returns (address) {
         address owner = ownerOf(tokenId);
 
         // We do not use _isAuthorized because single-token approvals should not be able to call approve
@@ -581,7 +581,7 @@ contract QRC721 is IERC721Errors {
      *
      * Emits an {ApprovalForAll} event.
      */
-    function _setApprovalForAll(address owner, address operator, bool approved) internal virtual {
+    function _setApprovalForAll(address owner, address operator, bool approved) internal  {
         if (operator == address(0)) {
             revert ERC721InvalidOperator(operator);
         }
@@ -592,7 +592,7 @@ contract QRC721 is IERC721Errors {
     /**
      * @dev Reverts if the `tokenId` has not been minted yet.
      */
-    function _requireMinted(uint256 tokenId) internal view virtual {
+    function _requireMinted(uint256 tokenId) internal view  {
         if (_ownerOf(tokenId) == address(0)) {
             revert ERC721NonexistentToken(tokenId);
         }
