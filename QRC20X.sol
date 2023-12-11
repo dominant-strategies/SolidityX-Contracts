@@ -75,8 +75,8 @@ contract QRC20 {
         _name = "Quai Cross-Chain Token";
         _symbol = "QXC";
         _deployer = msg.sender;
-        _totalSupply = 1000E18; // 1000 tokens
-        _mint(_deployer, _totalSupply);
+        uint256 initialSupply = 1000E18; // 1000 tokens
+        _mint(_deployer, initialSupply);
         Ranges[0] = Range(0, 29);    // zone 0-0 // cyprus1                        
         Ranges[1] = Range(30, 58); // zone 0-1 // cyprus2
         Ranges[2] = Range(59, 87); // zone 0-2 // cyprus3
