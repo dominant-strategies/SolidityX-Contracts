@@ -71,11 +71,11 @@ contract QRC20 {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor() {
-        _name = "Quai Cross-Chain Token";
-        _symbol = "QXC";
+    constructor(string memory name_, string memory symbol_, uint256 initialSupply_) {
+        _name = name_;
+        _symbol = symbol_;
         _deployer = msg.sender;
-        uint256 initialSupply = 1000E18; // 1000 tokens
+        uint256 initialSupply = initialSupply_;
         _mint(_deployer, initialSupply);
         Ranges[0] = Range(0, 29);    // zone 0-0 // cyprus1                        
         Ranges[1] = Range(30, 58); // zone 0-1 // cyprus2
@@ -482,23 +482,6 @@ contract QRC20 {
         address to,
         uint256 amount
     ) internal  {}
-
-    /**
-    * This function allows the deployer to add an external address for the token contract on a different chain.
-    * Note that the deployer can only add one address per chain and this address cannot be changed afterwards.
-    * Be very careful when adding an address here.
-    */
-    function AddApprovedAddress(uint8 chain, address addr) public {
-        bool isInternal;
-        assembly {
-            isInternal := isaddrinternal(addr)
-        }
-        require(!isInternal, "Address is not external");
-        require(msg.sender == _deployer, "Sender is not deployer");
-        require(chain < 9, "Max 9 zones");
-        require(ApprovedAddresses[chain] == address(0), "The approved address for this zone already exists");
-        ApprovedAddresses[chain] = addr;
-    }
 
     /**
     * This function allows the deployer to add external addresses for the token contract on different chains.
