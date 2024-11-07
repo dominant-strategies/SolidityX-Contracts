@@ -718,7 +718,7 @@ contract QRC721 is IERC721Errors {
      * @dev Return the log in base 10 of a positive value rounded towards zero.
      * Returns 0 if given 0.
      * 
-     * @param value The unsigned integer to convert to a string.
+     * @param value The unsigned integer perform the log on
      */
     function log10(uint256 value) internal pure returns (uint256) {
         uint256 result = 0;
